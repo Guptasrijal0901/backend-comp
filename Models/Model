@@ -1,0 +1,22 @@
+const mongoose = require("mongoose");
+const compSchema = new mongoose.Schema(
+    {
+        tabname: {type: String,
+        trim: true},
+        tabemail: {type: String,
+        trim: true},
+        tabbranch: {type: String,
+        trim: true},
+        tabroll: {type: Number,
+        trim: true},
+        tabdate: {type: String,
+        trim: true},
+        tabphone: {type: Number,
+        trim: true},
+        tabcomp: {type: String,
+        trim: true}
+    },
+    {timestamps: true}
+)
+const tablemodel = mongoose.model("table-data", compSchema);
+module.exports = tablemodel;
