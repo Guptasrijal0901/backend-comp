@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { connectDatabase } = require ("./Connection/Connect")
-const tablemodel = require ("./Models/Model")
+const collection = require ("./Models/Model")
 const cors = require('cors');
 app.use(express.json());
 app.use(cors());
@@ -13,24 +13,23 @@ app.use(cors());
 app.post("/api/create", async (req, res)=>{
   try {
     const newobject = {
-          tabname:  req.body.name,
-          tabemail:  req.body.email,
-          tabbranch: req.body.branch,
-          tabroll: req.body.roll,
-          tabdate: req.body.date,
-          tabphone: req.body.phone,
-          tabcomp: req.body.comp
+        name:  req.body.name,
+        email:  req.body.email,
+        branch: req.body.branch,
+        roll: req.body.roll,
+        date: req.body.date,
+        phone: req.body.phone,
+        comp: req.body.comp
           }
           console.log(newobject);
-          const tabledata = new tablemodel(newobject);
+          const tabledata = new collection(newobject);
           await tabledata.save();
-          return res
-          .status(100)
-          .json({success: true, message: "Data saved succesfully"})      
+          return res.status(200).json({success: true, message: "Data saved succesfully"})      
   }
   catch (error) {
     console.log(error);
-    return res.status(303).json({sucess: false, error: error.message});
+    return res.status(400)
+    .json({success: false, error: error.message});
   }
   });
 
@@ -38,19 +37,20 @@ app.post("/api/create", async (req, res)=>{
  //read
 app.get("/api/read", async (req, res) => {
   try {
-    const read = await tablemodel.find().sort({ createdAt: -1 });
+    const read = await collection.find().sort({ createdAt: -1 });
     // console.log(compdata);
-    return res.status(200).json({ success: true, read: read });
+    return res.status(400).json({ success: true, read: read });
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ success: false, error: error.message });
+    return res.status(400).json({ success: false, error: error.message });
   }
+  // res.json("hi there")
 });
 
  //delete
 app.delete("/delete/:id", async (req, res) => {
     try {
-      const tabledelete = await tablemodel.findByIdAndDelete(req.params.id);
+      const tabledelete = await collection.findByIdAndDelete(req.params.id);
       console.log(tabledelete)
       return res.json({
         success: true,
@@ -67,10 +67,10 @@ app.delete("/delete/:id", async (req, res) => {
 // // update
 app.put("/update/:comp/:id",async(req,res)=>{
     try {
-      const update = await tablemodel.findByIdAndUpdate(req.params.id,
+      const update = await collection.findByIdAndUpdate(req.params.id,
         {comp: req.params.comp})
       console.log(update)
-      return res.status.json({success:true,message:"Updated Successfully"})
+      return res.status(400).json({success:true,message:"Updated Successfully"})
     } catch (error) {
       return res.status(400).json({
         success:false, error:error.message,
